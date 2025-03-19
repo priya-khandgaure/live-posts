@@ -15,16 +15,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-        node-version: 18
+          node-version: 18
 
       - name: Install dependencies
         run: npm install
         
       - name: Install Angular CLI
-        run: npm install -g @angular/cli
+        run: npm install -g @angular/cli && export PATH="$(npm root -g)/@angular/cli/bin:$PATH"
 
       - name: Build Angular project
-        run: ng build --configuration=production
+        run: npx ng build --configuration=production
 
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v2
