@@ -21,7 +21,12 @@ jobs:
         run: npm install
         
       - name: Install Angular CLI
-        run: npm install -g @angular/cli && export PATH="$(npm root -g)/@angular/cli/bin:$PATH"
+        run: npm install -g @angular/cli
+
+      - name: Verify Angular CLI installation
+        run: |
+          echo "Checking Angular CLI version..."
+          npx ng version
 
       - name: Build Angular project
         run: npx ng build --configuration=production
@@ -34,3 +39,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           site-id: ${{ secrets.NETLIFY_SITE_ID }}
+
