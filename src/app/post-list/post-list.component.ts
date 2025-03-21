@@ -12,22 +12,23 @@ import { Subscription } from 'rxjs';
   templateUrl: './post-list.component.html',
   styleUrl: './post-list.component.css'
 })
-
-export class PostListComponent implements OnInit, OnDestroy {
+  
+export class PostListComponent implements OnInit {
   listOfPost: Post[] = [];
-  private postSub!: Subscription;
 
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService,
+    private backEndService: BackEndService
+  ) {}
 
   ngOnInit(): void {
-    this.postSub = this.postService.getPosts().subscribe((listOfPost: Post[]) => {
-      this.listOfPost = listOfPost;
+    // Fetch latest data from Firebase on page load
+    this.backEndService.fetchData();
+
+    // Subscribe to post changes to update UI
+    this.postService.listChangedEvent.subscribe((posts) => {
+      this.listOfPost = posts;
     });
   }
-
-  ngOnDestroy(): void {
-    if (this.postSub) {
-      this.postSub.unsubscribe();
-    }
-  }
 }
+
