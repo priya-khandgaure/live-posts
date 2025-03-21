@@ -1,42 +1,42 @@
-import { EventEmitter, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Post } from './post.model';
+import { BehaviorSubject } from 'rxjs';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class PostService {
-  listChangedEvent: EventEmitter<Post[]> = new EventEmitter();
-	listOfPost: Post[] = [];
+  private listOfPost: Post[] = [];
+  private listChanged = new BehaviorSubject<Post[]>([]);
 
-  getPosts(){
-  	return this.listOfPost;
+  getPosts() {
+    return this.listChanged.asObservable();
   }
 
-  deletePost(index: number){
-  	this.listOfPost.splice(index,1);
-    this.listChangedEvent.emit(this.listOfPost);
+  deletePost(index: number) {
+    this.listOfPost.splice(index, 1);
+    this.listChanged.next([...this.listOfPost]);
   }
 
-  addPost(post: Post){
-  	this.listOfPost.push(post);
-    this.listChangedEvent.emit(this.listOfPost);
+  addPost(post: Post) {
+    this.listOfPost.push(post);
+    this.listChanged.next([...this.listOfPost]);
   }
 
-  updatePost(index: number, post:Post){
-  	this.listOfPost[index] = post;
-    this.listChangedEvent.emit(this.listOfPost);
+  updatePost(index: number, post: Post) {
+    this.listOfPost[index] = post;
+    this.listChanged.next([...this.listOfPost]);
   }
 
-  getPostById(index: number){
+  getPostById(index: number) {
     return this.listOfPost[index];
   }
 
-  likePost(index: number){
-    this.listOfPost[index].numberOfLikes +=1;
-    this.listChangedEvent.emit(this.listOfPost);
+  likePost(index: number) {
+    this.listOfPost[index].numberOfLikes += 1;
+    this.listChanged.next([...this.listOfPost]);
   }
 
-  setPosts(listOfPost: Post[]){
+  setPosts(listOfPost: Post[]) {
     this.listOfPost = listOfPost;
-    this.listChangedEvent.emit(this.listOfPost);
+    this.listChanged.next([...this.listOfPost]);
   }
-
 }

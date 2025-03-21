@@ -1,8 +1,9 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostComponent } from '../post/post.component';
 import { Post } from '../post.model';
 import { PostService } from '../post.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-post-list',
@@ -11,17 +12,22 @@ import { PostService } from '../post.service';
   templateUrl: './post-list.component.html',
   styleUrl: './post-list.component.css'
 })
-export class PostListComponent{
+
+export class PostListComponent implements OnInit, OnDestroy {
   listOfPost: Post[] = [];
+  private postSub!: Subscription;
 
   constructor(private postService: PostService) {}
 
   ngOnInit(): void {
-
-    this.listOfPost = this.postService.getPosts();
-
-    this.postService.listChangedEvent.subscribe((listOfPost: Post[]) => {
-      this.listOfPost = this.postService.getPosts();
+    this.postSub = this.postService.getPosts().subscribe((listOfPost: Post[]) => {
+      this.listOfPost = listOfPost;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.postSub) {
+      this.postSub.unsubscribe();
+    }
   }
 }
