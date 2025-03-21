@@ -1,44 +1,32 @@
 import { Injectable } from "@angular/core";
 import { PostService } from './post.service';
 import { Post } from './post.model';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 
-@Injectable({providedIn: 'root'})
-
-// database path - https://live-posts-24b51-default-rtdb.firebaseio.com/
-
+@Injectable({ providedIn: 'root' })
 export class BackEndService {
-	constructor(private postService: PostService, private http: HttpClient) {}
+  constructor(private postService: PostService, private http: HttpClient) {}
 
-	// functionality 1 - save data
-	saveData() {
-		// step 1- get list of posts from post.service
-		const listOfPosts: Post[] = this.postService.getPosts();
+  // Save data to Firebase
+  saveData() {
+    this.postService.getPosts().subscribe((listOfPosts: Post[]) => {
+      this.http.put('https://live-posts-24b51-default-rtdb.firebaseio.com/posts.json', listOfPosts)
+        .subscribe(res => {
+          console.log('Data saved:', res);
+        });
+    });
+  }
 
-		//send list of post to backend
-		this.http.put('https://live-posts-24b51-default-rtdb.firebaseio.com/posts.json',
-		listOfPosts).subscribe( (res) => {
-			console.log(res)
-		});
-	}
-
-	
-	// functionlity 2 -fetch data
-	fetchData() {
-		// step 1 - Get the data from the backend
-		this.http
-		.get<Post[]>(
-			'https://live-posts-24b51-default-rtdb.firebaseio.com/posts.json')
-		.pipe(
-			tap((listOfPosts: Post[]) => {
-				console.log(listOfPosts);
-
-				// step 2 - send data to post service
-				this.postService.setPosts(listOfPosts);
-			})
-		)
-		.subscribe()
-	}
-	
+  // Fetch data from Firebase and update UI
+  fetchData() {
+    this.http.get<Post[]>('https://live-posts-24b51-default-rtdb.firebaseio.com/posts.json')
+      .pipe(
+        tap((listOfPosts: Post[]) => {
+          console.log('Fetched Posts:', listOfPosts);
+          this.postService.setPosts(listOfPosts);
+        })
+      )
+      .subscribe();
+  }
 }
