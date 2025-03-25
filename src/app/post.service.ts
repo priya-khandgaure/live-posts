@@ -8,6 +8,7 @@ export class PostService {
   private listChanged = new BehaviorSubject<Post[]>([]);
 
   getPosts() {
+    console.log('Inside get posts',this.listChanged.asObservable());
     return this.listChanged.asObservable();
   }
 
@@ -36,7 +37,9 @@ export class PostService {
   }
 
   setPosts(listOfPost: Post[]) {
+    console.log("list of post", listOfPost);
     this.listOfPost = listOfPost;
+    console.log("this--- list of post", this.listOfPost);
     this.listChanged.next([...this.listOfPost]);
   }
 }
