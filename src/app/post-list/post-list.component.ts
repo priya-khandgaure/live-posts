@@ -12,7 +12,6 @@ import { Subscription } from 'rxjs';
   templateUrl: './post-list.component.html',
   styleUrl: './post-list.component.css'
 })
-
 export class PostListComponent implements OnInit, OnDestroy {
   listOfPost: Post[] = [];
   private postSub!: Subscription;
