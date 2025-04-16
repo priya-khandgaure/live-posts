@@ -35,8 +35,8 @@ jobs:
         uses: nwtgck/actions-netlify@v2
         with:
           publish-dir: "./dist/live-posts"
-          production-branch: "master"
+          production-branch: "development"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          site-id: ${{ secrets.NETLIFY_SITE_ID }}
+          site-id: ${{ secrets.NETLIFY_DEV_SITE_ID }}
 
