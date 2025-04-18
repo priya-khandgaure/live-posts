@@ -1,10 +1,11 @@
 name: Scheduled Netlify Deployment
-
 on:
+  push:
+    branches:
+      - master        # change if you want this for 'dev' or another branch
   schedule:
-    - cron: "0 0 * * *" # Runs every day at midnight UTC (adjust as needed)
-  workflow_dispatch: # Allows manual trigger
-
+    - cron: "0 0 * * *"
+  workflow_dispatch:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
