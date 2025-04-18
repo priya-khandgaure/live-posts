@@ -1,11 +1,22 @@
 name: Scheduled Netlify Deployment
+
 on:
   push:
     branches:
-      - master        # change if you want this for 'dev' or another branch
+      - master        # Trigger on push to master
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *" # Daily at midnight UTC
   workflow_dispatch:
+    inputs:
+      deployment_reason:
+        description: 'Reason for deployment'
+        required: false
+        default: 'Manual trigger'
+      target_env:
+        description: 'Target environment (e.g., dev/staging/prod)'
+        required: false
+        default: 'production'
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -41,3 +52,10 @@ jobs:
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           site-id: ${{ secrets.NETLIFY_SITE_ID }}
 
+      - name: Log deployment info
+        run: |
+          echo "🚀 Deployment Info:"
+          echo "Reason: ${{ github.event.inputs.deployment_reason }}"
+          echo "Target Environment: ${{ github.event.inputs.target_env }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo "Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S') UTC"
